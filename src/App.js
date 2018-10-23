@@ -1,13 +1,12 @@
 import React from "react";
 import formatNumber from "format-number";
 import photographer from "./images/girl.png";
-import store from "./store/";
 import actionCreator from "./actions/";
+import { connect } from "react-redux";
 
 import "./App.css";
 
-const App = () => {
-  const { totalAmount, username } = store.getState();
+const App = ({ totalAmount, username, actionCreator }) => {
   return (
     <div className="App">
       <img className="App__userpic" src={photographer} alt="user" />
@@ -21,21 +20,27 @@ const App = () => {
         <button
           data-action="WITHDRAW"
           data-amount="10000"
-          onClick={dispatchAction}
+          onClick={e => {
+            actionCreator(e.target.dataset.action, e.target.dataset.amount);
+          }}
         >
           WITHDRAW $10,000
         </button>
         <button
           data-action="WITHDRAW"
           data-amount="5000"
-          onClick={dispatchAction}
+          onClick={e => {
+            actionCreator(e.target.dataset.action, e.target.dataset.amount);
+          }}
         >
           WITHDRAW $5,000
         </button>
         <button
           data-action="DEPOSITE"
           data-amount="5000"
-          onClick={dispatchAction}
+          onClick={e => {
+            actionCreator(e.target.dataset.action, e.target.dataset.amount);
+          }}
         >
           DEPOSITE $5,000
         </button>
@@ -44,7 +49,9 @@ const App = () => {
       <p
         className="App__giveaway"
         data-action="DONATE_ALL"
-        onClick={dispatchAction}
+        onClick={e => {
+          actionCreator(e.target.dataset.action, e.target.dataset.amount);
+        }}
       >
         Give away all your cash to charity
       </p>
@@ -52,10 +59,11 @@ const App = () => {
   );
 };
 
-const dispatchAction = e => {
-  let action_type = e.target.dataset.action;
-  let amount = e.target.dataset.amount;
-  store.dispatch(actionCreator(action_type, amount));
+const mapStateToProps = ({ totalAmount, username }) => {
+  return { totalAmount, username };
 };
 
-export default App;
+export default connect(
+  mapStateToProps,
+  { actionCreator }
+)(App);
